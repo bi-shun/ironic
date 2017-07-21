@@ -692,6 +692,9 @@ class UcsConnectionError(IronicException):
     _msg_fmt = _("Cisco UCS client: connection failed for node "
                  "%(node)s. Reason: %(error)s")
 
+class WolOperationError(IronicException):
+    pass
+
 
 class ImageUploadFailed(IronicException):
     _msg_fmt = _("Failed to upload %(image_name)s image to web server "

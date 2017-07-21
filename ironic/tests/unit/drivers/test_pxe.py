@@ -38,7 +38,9 @@ from ironic.drivers.modules import snmp
 from ironic.drivers.modules import ssh
 from ironic.drivers.modules.ucs import management as ucs_management
 from ironic.drivers.modules.ucs import power as ucs_power
+from ironic.drivers.modules import wol
 from ironic.drivers import pxe
+
 
 
 class PXEDriversTestCase(testtools.TestCase):
@@ -188,3 +190,13 @@ class PXEDriversTestCase(testtools.TestCase):
 
         self.assertRaises(exception.DriverLoadError,
                           pxe.PXEAndCIMCDriver)
+
+    def test_pxe_wakeonlan_driver(self, try_import_mock):
+        try_import_mock.return_value = True
+
+        driver = pxe.PXEAndWakeOnLanDriver()
+
+        self.assertIsInstance(driver.power, wol.WakeOnLanPower)
+        self.assertIsInstance(driver.boot, pxe_module.PXEBoot)
+        self.assertIsInstance(driver.deploy, iscsi_deploy.ISCSIDeploy)
+        self.assertIsInstance(driver.vendor, iscsi_deploy.VendorPassthru)

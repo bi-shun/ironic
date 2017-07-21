@@ -41,6 +41,7 @@ from ironic.drivers.modules.irmc import power as irmc_power
 from ironic.drivers.modules import iscsi_deploy
 from ironic.drivers.modules import pxe
 from ironic.drivers.modules import snmp
+from ironic.drivers.modules import wol
 from ironic.drivers.modules import ssh
 from ironic.drivers.modules.ucs import management as ucs_mgmt
 from ironic.drivers.modules.ucs import power as ucs_power
@@ -220,3 +221,21 @@ class PXEAndCIMCDriver(base.BaseDriver):
         self.management = cimc_mgmt.CIMCManagement()
         self.inspect = inspector.Inspector.create_if_enabled(
             'PXEAndCIMCDriver')
+
+class PXEAndWakeOnLanDriver(base.BaseDriver):
+    """PXE + WakeOnLan driver.
+
+    This driver implements the `core` functionality, combining
+    :class:`ironic.drivers.modules.wol.WakeOnLanPower` for power on
+    :class:`ironic.drivers.modules.iscsi_deploy.ISCSIDeploy` for image
+    deployment.  Implementations are in those respective classes;
+    this class is merely the glue between them.
+    """
+
+    supported = False
+
+    def __init__(self):
+        self.power = wol.WakeOnLanPower()
+        self.boot = pxe.PXEBoot()
+        self.deploy = iscsi_deploy.ISCSIDeploy()
+        self.vendor = iscsi_deploy.VendorPassthru()

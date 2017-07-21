@@ -51,6 +51,7 @@ from ironic.drivers.modules import ssh
 from ironic.drivers.modules.ucs import management as ucs_mgmt
 from ironic.drivers.modules.ucs import power as ucs_power
 from ironic.drivers import utils
+from ironic.drivers.modules import wol
 
 
 class FakeDriver(base.BaseDriver):
@@ -248,6 +249,15 @@ class FakeCIMCDriver(base.BaseDriver):
         self.power = cimc_power.Power()
         self.deploy = fake.FakeDeploy()
         self.management = cimc_mgmt.CIMCManagement()
+
+class FakeWakeOnLanDriver(base.BaseDriver):
+    """Fake Wake-On-Lan driver."""
+
+    supported = False
+
+    def __init__(self):
+        self.power = wol.WakeOnLanPower()
+        self.deploy = fake.FakeDeploy()
 
 
 class FakeOneViewDriver(base.BaseDriver):
